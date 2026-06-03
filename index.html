@@ -250,7 +250,7 @@
             </div>
             <div class="input-group">
                 <label for="shiftKey">Kunci Geser (Key):</label>
-                <input type="number" id="shiftKey" value="12">
+                <input type="number" id="shiftKey" value="0">
             </div>
             <div class="button-group">
                 <button class="action-btn btn-encrypt" onclick="processData(true)">ENKRIPSI</button>
@@ -405,7 +405,7 @@
         // Reset Fungsi
         function resetData() {
             document.getElementById("inputText").value = "";
-            document.getElementById("shiftKey").value = 12;
+            document.getElementById("shiftKey").value = 0; // Sudah diubah ke 0
             document.getElementById("outputText").innerText = "-";
             document.getElementById("dynamic-formula-container").style.display = "none";
             document.getElementById("dynamic-formula-content").innerHTML = "";
