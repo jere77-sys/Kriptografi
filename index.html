@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kriptografi ASCII Mod 256</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0b0f19; /* Warna gelap khas Cyber/Tech */
+            background-image: 
+                linear-gradient(rgba(0, 201, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 201, 255, 0.07) 1px, transparent 1px);
+            background-size: 35px 35px; /* Pola Grid Digital */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efek gelap (Vignette) di sudut layar */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, #0b0f19 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Bola cahaya animasi melayang di background */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -2;
+            animation: floatOrb 10s infinite alternate ease-in-out;
+        }
+        .orb-1 {
+            width: 400px; height: 400px;
+            background: #00c9ff;
+            top: -150px; left: -150px;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: #333399;
+            bottom: -200px; right: -150px;
+            animation-delay: -5s;
+        }
+        .orb-3 {
+            width: 300px; height: 300px;
+            background: #ff00cc;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -2s;
+            opacity: 0.3;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 40px) scale(1.1); }
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 700px; /* Diperlebar agar muat tabel */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        p.subtitle {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00c9ff 0%, #333399 100%);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        textarea, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus, input[type="number"]:focus {
+            border-color: #00c9ff;
+            box-shadow: 0 0 10px rgba(0, 201, 255, 0.5);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: white;
+        }
+
+        .btn-encrypt { background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%); color: #000; }
+        .btn-decrypt { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff; }
+        .btn-reset { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: #000; }
+
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        .result-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 80px;
+            word-wrap: break-word;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #00c9ff;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .scrollable-area {
+            max-height: 350px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Kostumisasi Scrollbar */
+        .scrollable-area::-webkit-scrollbar { width: 8px; }
+        .scrollable-area::-webkit-scrollbar-track { background: transparent; }
+        .scrollable-area::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+
+        /* Tabel CSS */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+        th, td {
+            padding: 8px 5px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        th {
+            background: rgba(0, 0, 0, 0.6);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(5px);
+            color: #00c9ff;
+            font-weight: 600;
+        }
+        /* Memberikan warna berbeda selang-seling agar mudah dibaca */
+        td:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+        }
+
+        /* History Items CSS */
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #92fe9d;
+            font-size: 13px;
+        }
+        .history-item.decrypt { border-left-color: #ff0844; }
+        .history-time { font-size: 11px; opacity: 0.6; margin-bottom: 5px; }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Latar Belakang Animasi -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <div class="glass-container">
+        <h2>Kriptografi ASCII</h2>
+        <p class="subtitle">Enkripsi & Dekripsi dengan Modulo 256</p>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="openTab('tab-utama')">🔒 Utama</button>
+            <button class="tab-btn" onclick="openTab('tab-rumus')">📝 Rumus</button>
+            <button class="tab-btn" onclick="openTab('tab-tabel')">🔠 Tabel ASCII</button>
+            <button class="tab-btn" onclick="openTab('tab-riwayat')">⏱️ Riwayat</button>
+            <button class="tab-btn" onclick="openTab('tab-tentang')">ℹ️ Tentang</button>
+        </div>
+
+        <div id="tab-utama" class="tab-content active">
+            <div class="input-group">
+                <label for="inputText">Masukkan Teks / Pesan Rahasia:</label>
+                <textarea id="inputText" rows="3" placeholder="Ketik sesuatu di sini..."></textarea>
+            </div>
+            <div class="input-group">
+                <label for="shiftKey">Kunci Geser (Angka Bebas):</label>
+                <input type="number" id="shiftKey" value="12">
+            </div>
+            <div class="button-group">
+                <button class="action-btn btn-encrypt" onclick="processData(true)">ENKRIPSI</button>
+                <button class="action-btn btn-decrypt" onclick="processData(false)">DEKRIPSI</button>
+                <button class="action-btn btn-reset" onclick="resetData()">ATUR ULANG</button>
+            </div>
+            <div class="input-group">
+                <div style="font-size: 12px; color: #00c9ff; margin-bottom: 5px; font-weight: bold;">HASIL OUTPUT:</div>
+                <div class="result-container" id="outputText">-</div>
+            </div>
+        </div>
+
+        <div id="tab-rumus" class="tab-content">
+            <div class="info-box">
+                <h3 style="margin-bottom: 10px; color:#00c9ff;">Penjelasan Modulo 256</h3>
+                <p>Kriptografi ini menggunakan skema pergeseran karakter (seperti Caesar Cipher) namun diterapkan pada tabel ASCII yang memiliki 256 karakter (nilai 0 hingga 255).</p>
+                <br>
+                <p><strong>Rumus Enkripsi:</strong><br>
+                <code style="background: rgba(0,0,0,0.3); padding: 4px; border-radius: 4px;">C = (P + K) mod 256</code></p>
+                <br>
+                <p><strong>Rumus Dekripsi:</strong><br>
+                <code style="background: rgba(0,0,0,0.3); padding: 4px; border-radius: 4px;">P = (C - K) mod 256</code></p>
+                <br>
+                <ul style="margin-left: 20px; font-size: 13px;">
+                    <li><strong>C</strong> = Ciphertext (Teks Sandi)</li>
+                    <li><strong>P</strong> = Plaintext (Teks Asli)</li>
+                    <li><strong>K</strong> = Key (Kunci Pergeseran)</li>
+                    <li><strong>mod 256</strong> = Memastikan nilai selalu berputar kembali jika melebihi 255, sehingga tetap menjadi karakter ASCII yang valid.</li>
+                </ul>
+            </div>
+            
+            <!-- Tempat untuk simulasi rumus dinamis -->
+            <div id="dynamic-formula-container" style="display: none; margin-top: 15px;">
+                <h4 style="color: #92fe9d; margin-bottom: 10px;">Simulasi Perhitungan Terakhir:</h4>
+                <div class="scrollable-area" id="dynamic-formula-content" style="max-height: 200px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; background: rgba(0,0,0,0.4);">
+                    <!-- Konten ini akan diisi lewat JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-tabel" class="tab-content">
+            <div class="info-box" style="margin-bottom: 10px; padding: 10px;">
+                Tabel ASCII di bawah disusun dalam <strong>4 kolom</strong> agar lebih ringkas. Karakter 0-31 umumnya adalah tombol kontrol keyboard.
+            </div>
+            <div class="scrollable-area" style="max-height: 400px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dec</th><th>Char</th>
+                            <th>Dec</th><th>Char</th>
+                            <th>Dec</th><th>Char</th>
+                            <th>Dec</th><th>Char</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asciiTableBody">
+                        <!-- Tabel akan diisi secara otomatis oleh JavaScript dalam bentuk grid -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-riwayat" class="tab-content">
+            <div class="scrollable-area" id="historyContainer">
+                <p style="text-align: center; opacity: 0.5; margin-top: 20px;">Belum ada aktivitas. Silakan lakukan enkripsi atau dekripsi terlebih dahulu.</p>
+                <!-- Riwayat akan muncul di sini -->
+            </div>
+        </div>
+
+        <div id="tab-tentang" class="tab-content">
+            <div class="info-box">
+                <h3 style="margin-bottom: 10px; color:#00c9ff; text-align:center;">Pengantar Kriptografi</h3>
+                <hr style="border: 0; height: 1px; background: rgba(255,255,255,0.2); margin: 15px 0;">
+                <p style="margin-bottom: 12px; text-align: justify; font-size: 13px;"><strong>Kriptografi</strong> berasal dari bahasa Yunani, yaitu <em>"kryptos"</em> yang berarti tersembunyi, dan <em>"graphein"</em> yang berarti tulisan. Secara umum, kriptografi adalah ilmu dan seni untuk menjaga kerahasiaan pesan dengan cara menyandikannya ke dalam bentuk yang tidak dapat dipahami oleh pihak yang tidak berhak.</p>
+                <p style="margin-bottom: 12px; text-align: justify; font-size: 13px;">Proses menyamarkan pesan asli (<strong>Plaintext</strong>) menjadi pesan sandi (<strong>Ciphertext</strong>) disebut <strong>Enkripsi</strong>. Sebaliknya, proses mengembalikan pesan sandi menjadi pesan asli menggunakan sebuah kunci (<em>Key</em>) disebut <strong>Dekripsi</strong>.</p>
+                <p style="text-align: justify; font-size: 13px;">Pada program ini, teknik yang digunakan didasarkan pada metode pergeseran karakter yang diterapkan secara modern pada <strong>Tabel ASCII</strong> dengan total 256 karakter (0-255). Operasi <strong>Modulo 256</strong> berfungsi sebagai pembatas matematis untuk memastikan bahwa pergeseran karakter akan selalu melingkar (<em>looping</em>) di dalam batas tabel yang valid, sehingga tidak ada data yang rusak (*corrupt*) atau hilang saat proses dekripsi dilakukan.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Logika Pindah Tab Menu
+        function openTab(tabId) {
+            // Sembunyikan semua tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Hilangkan status aktif di semua tombol
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Tampilkan tab yang dipilih
+            document.getElementById(tabId).classList.add('active');
+            // Tandai tombol yang diklik (mencari tombol berdasarkan fungsi onclick-nya)
+            event.currentTarget.classList.add('active');
+        }
+
+        // 2. Logika Pembuatan Tabel ASCII Otomatis (0 - 255) dengan format Grid/Multi-Kolom
+        function generateASCIITable() {
+            const tbody = document.getElementById('asciiTableBody');
+            let tableHTML = '';
+            
+            // Karena ada 4 kolom ke samping, kita bagi 256 dengan 4 = 64 baris
+            for (let i = 0; i < 64; i++) {
+                tableHTML += `<tr>`;
+                for (let col = 0; col < 4; col++) {
+                    // Rumus menentukan urutan angka desimal per kolom
+                    let val = i + (col * 64);
+                    
+                    // Format khusus untuk karakter kontrol agar tabel tidak berantakan
+                    let displayChar;
+                    if (val < 32 || val === 127) {
+                        displayChar = '<span style="opacity:0.4; font-size:10px;">[Ctrl]</span>';
+                    } else if (val === 173) {
+                         // Soft hyphen, biasanya tidak kelihatan
+                        displayChar = '<span style="opacity:0.4; font-size:10px;">[Shy]</span>';
+                    } else {
+                        displayChar = String.fromCharCode(val);
+                    }
+                    
+                    tableHTML += `<td>${val}</td><td style="font-size:15px; color:#92fe9d;">${displayChar}</td>`;
+                }
+                tableHTML += `</tr>`;
+            }
+            tbody.innerHTML = tableHTML;
+        }
+        // Jalankan pembuatan tabel saat web pertama kali dimuat
+        generateASCIITable();
+
+        // 3. Sistem Riwayat / History
+        let historyData = [];
+
+        function addHistory(isEncrypt, input, key, output) {
+            const time = new Date().toLocaleTimeString('id-ID');
+            const modeName = isEncrypt ? 'ENKRIPSI' : 'DEKRIPSI';
+            const cssClass = isEncrypt ? '' : 'decrypt';
+
+            // Masukkan data baru ke urutan paling atas (unshift)
+            historyData.unshift({
+                time: time,
+                mode: modeName,
+                css: cssClass,
+                input: input,
+                key: key,
+                output: output
+            });
+
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyContainer');
+            if (historyData.length === 0) return;
+
+            let html = '';
+            historyData.forEach(item => {
+                html += `
+                    <div class="history-item ${item.css}">
+                        <div class="history-time">Waktu: ${item.time} | Mode: <strong>${item.mode}</strong> | Kunci: ${item.key}</div>
+                        <div><strong>Input:</strong> ${item.input}</div>
+                        <div style="margin-top:4px;"><strong>Output:</strong> <span style="color:#00c9ff;">${item.output}</span></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // 4. Logika Kriptografi Utama (Enkripsi & Dekripsi) beserta Perekaman Rumus
+        function processData(isEncrypt) {
+            const text = document.getElementById("inputText").value;
+            const key = parseInt(document.getElementById("shiftKey").value);
+            
+            if (text.length === 0) {
+                alert("Harap masukkan teks terlebih dahulu!");
+                return;
+            }
+            if (isNaN(key)) {
+                alert("Kunci harus berupa angka!");
+                return;
+            }
+
+            let result = "";
+            let formulaHTML = ""; // Variabel penampung teks jalan rumus
+            const modeName = isEncrypt ? 'Enkripsi' : 'Dekripsi';
+
+            for (let i = 0; i < text.length; i++) {
+                let asciiCode = text.charCodeAt(i);
+                let newCode;
+
+                // Format karakter untuk ditangkap di rumus (menghindari render karakter kosong/kontrol yang merusak tabel)
+                let displayOriginalChar = asciiCode < 32 || asciiCode === 127 || asciiCode === 173 ? `[Ctrl]` : text[i];
+                
+                if (isEncrypt) {
+                    newCode = (asciiCode + key) % 256;
+                    // Mencatat langkah-langkah rumus Enkripsi per karakter
+                    formulaHTML += `<div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 4px 0;">
+                        '${displayOriginalChar}' (${asciiCode}) &rarr; (${asciiCode} + ${key}) mod 256 = <strong>${newCode}</strong>
+                    </div>`;
+                } else {
+                    newCode = ((asciiCode - key) % 256 + 256) % 256;
+                    // Mencatat langkah-langkah rumus Dekripsi per karakter
+                    formulaHTML += `<div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 4px 0;">
+                        '${displayOriginalChar}' (${asciiCode}) &rarr; (${asciiCode} - ${key}) mod 256 = <strong>${newCode}</strong>
+                    </div>`;
+                }
+
+                result += String.fromCharCode(newCode);
+            }
+
+            // Tampilkan hasil
+            document.getElementById("outputText").innerText = result;
+
+            // Memperbarui UI Simulasi Rumus Dinamis
+            document.getElementById("dynamic-formula-container").style.display = "block";
+            document.getElementById("dynamic-formula-content").innerHTML = `
+                <div style="margin-bottom: 8px; color: #fff;">
+                    Mode: <strong style="color: ${isEncrypt ? '#92fe9d' : '#ff0844'};">${modeName}</strong> | Kunci (K): <strong>${key}</strong>
+                </div>
+                ${formulaHTML}
+            `;
+
+            // Tambahkan ke sistem Riwayat
+            addHistory(isEncrypt, text, key, result);
+        }
+
+        // 5. Fungsi Atur Ulang (Reset)
+        function resetData() {
+            // Mengosongkan Input & Output
+            document.getElementById("inputText").value = "";
+            document.getElementById("shiftKey").value = "12"; // Kembalikan nilai kunci ke default
+            document.getElementById("outputText").innerText = "-";
+            
+            // Menyembunyikan dan membersihkan simulasi rumus
+            document.getElementById("dynamic-formula-container").style.display = "none";
+            document.getElementById("dynamic-formula-content").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
