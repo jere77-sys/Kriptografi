@@ -260,7 +260,10 @@
         <!-- TAB UTAMA -->
         <div id="tab-utama" class="tab-content active">
             <div class="input-group">
-                <label for="inputText">Pesan (Plaintext / Ciphertext):</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <label for="inputText" style="margin: 0;">Pesan (Plaintext / Ciphertext):</label>
+                    <button class="copy-btn" onclick="pasteText()" id="btnPaste">📋 Tempel</button>
+                </div>
                 <textarea id="inputText" rows="3" placeholder="Ketik sesuatu di sini..."></textarea>
             </div>
             <div class="input-group">
@@ -465,6 +468,36 @@
                 alert("Gagal menyalin teks!");
                 console.error('Terjadi kesalahan saat menyalin: ', err);
             });
+        }
+
+        // Fungsi Tempel (Paste) Teks Input
+        async function pasteText() {
+            try {
+                // Meminta browser untuk membaca memori clipboard (teks yang terakhir di-copy)
+                const text = await navigator.clipboard.readText();
+                
+                // Memasukkan teks tersebut ke dalam kotak teks textarea
+                document.getElementById("inputText").value = text;
+                
+                // Memberikan efek visual (animasi berhasil) pada tombol
+                const btnPaste = document.getElementById("btnPaste");
+                btnPaste.innerText = "✔️ Ditempel!";
+                btnPaste.style.background = "rgba(146, 254, 157, 0.3)";
+                btnPaste.style.borderColor = "#92fe9d";
+                btnPaste.style.color = "#92fe9d";
+
+                // Kembalikan teks dan warna tombol seperti semula setelah 2 detik
+                setTimeout(() => {
+                    btnPaste.innerText = "📋 Tempel";
+                    btnPaste.style.background = "rgba(0, 201, 255, 0.2)";
+                    btnPaste.style.borderColor = "rgba(0, 201, 255, 0.5)";
+                    btnPaste.style.color = "#00c9ff";
+                }, 2000);
+            } catch (err) {
+                // Notifikasi jika gagal (biasanya karena browser tidak memberi izin akses clipboard)
+                alert("Gagal menempelkan teks! Pastikan browsermu mengizinkan akses Clipboard.");
+                console.error('Terjadi kesalahan saat menempel: ', err);
+            }
         }
     </script>
 </body>
