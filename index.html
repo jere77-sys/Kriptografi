@@ -392,10 +392,16 @@
                 
                 if (isEncrypt) {
                     newCode = (asciiCode + key) % 256;
-                    formulaHTML += `<div>'${displayChar}' (${asciiCode}) &rarr; +${key} mod 256 = <b style="color:#92fe9d">${newCode}</b></div>`;
+                    // Format karakter hasil (menghindari karakter kontrol tak kasat mata)
+                    let displayResultChar = (newCode < 32 || newCode === 127 || newCode === 173) ? '[Ctrl]' : String.fromCharCode(newCode);
+                    
+                    formulaHTML += `<div>'${displayChar}' (${asciiCode}) &rarr; +${key} mod 256 = <b style="color:#92fe9d">${newCode}</b> ('<span style="color:#fff">${displayResultChar}</span>')</div>`;
                 } else {
                     newCode = ((asciiCode - key) % 256 + 256) % 256;
-                    formulaHTML += `<div>'${displayChar}' (${asciiCode}) &rarr; -${key} mod 256 = <b style="color:#ff0844">${newCode}</b></div>`;
+                    // Format karakter hasil (menghindari karakter kontrol tak kasat mata)
+                    let displayResultChar = (newCode < 32 || newCode === 127 || newCode === 173) ? '[Ctrl]' : String.fromCharCode(newCode);
+                    
+                    formulaHTML += `<div>'${displayChar}' (${asciiCode}) &rarr; -${key} mod 256 = <b style="color:#ff0844">${newCode}</b> ('<span style="color:#fff">${displayResultChar}</span>')</div>`;
                 }
                 result += String.fromCharCode(newCode);
             }
