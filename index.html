@@ -143,6 +143,21 @@
         .btn-reset { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: #000; }
         .action-btn:active { transform: scale(0.97); }
 
+        /* Tombol Salin (Copy) */
+        .copy-btn {
+            background: rgba(0, 201, 255, 0.2);
+            border: 1px solid rgba(0, 201, 255, 0.5);
+            color: #00c9ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+            float: right; /* Posisikan ke kanan */
+        }
+        .copy-btn:hover { background: rgba(0, 201, 255, 0.4); color: white; }
+        .copy-btn:active { transform: scale(0.95); }
+
         .result-container {
             background: rgba(0, 0, 0, 0.3);
             padding: 12px;
@@ -258,7 +273,10 @@
                 <button class="action-btn btn-reset" onclick="resetData()">ATUR ULANG</button>
             </div>
             <div class="input-group">
-                <label style="color: #00c9ff;">Hasil Output:</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <label style="color: #00c9ff; margin: 0;">Hasil Output:</label>
+                    <button class="copy-btn" onclick="copyResult()" id="btnCopy">📋 Salin</button>
+                </div>
                 <div class="result-container" id="outputText">-</div>
             </div>
         </div>
@@ -409,6 +427,38 @@
             document.getElementById("outputText").innerText = "-";
             document.getElementById("dynamic-formula-container").style.display = "none";
             document.getElementById("dynamic-formula-content").innerHTML = "";
+            document.getElementById("btnCopy").innerText = "📋 Salin"; // Kembalikan teks tombol
+        }
+
+        // Fungsi Salin (Copy) Hasil
+        function copyResult() {
+            const resultText = document.getElementById("outputText").innerText;
+            const btnCopy = document.getElementById("btnCopy");
+
+            // Jangan salin jika hasilnya masih kosong/tanda strip
+            if (resultText === "-" || resultText.trim() === "") {
+                return;
+            }
+
+            // Gunakan API modern untuk menyalin
+            navigator.clipboard.writeText(resultText).then(() => {
+                // Beri efek visual bahwa teks berhasil disalin
+                btnCopy.innerText = "✔️ Disalin!";
+                btnCopy.style.background = "rgba(146, 254, 157, 0.3)";
+                btnCopy.style.borderColor = "#92fe9d";
+                btnCopy.style.color = "#92fe9d";
+
+                // Kembalikan tombol seperti semula setelah 2 detik
+                setTimeout(() => {
+                    btnCopy.innerText = "📋 Salin";
+                    btnCopy.style.background = "rgba(0, 201, 255, 0.2)";
+                    btnCopy.style.borderColor = "rgba(0, 201, 255, 0.5)";
+                    btnCopy.style.color = "#00c9ff";
+                }, 2000);
+            }).catch(err => {
+                alert("Gagal menyalin teks!");
+                console.error('Terjadi kesalahan saat menyalin: ', err);
+            });
         }
     </script>
 </body>
