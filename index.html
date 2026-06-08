@@ -218,6 +218,17 @@
         }
         .history-item.decrypt { border-left-color: #ff0844; }
 
+        /* Footer Copyright */
+        .footer-copyright {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+        }
+
         /* MEDIA QUERIES UNTUK TABLET (max 768px) */
         @media (max-width: 768px) {
             .ascii-grid { grid-template-columns: repeat(2, 1fr); } /* 2 Kolom di Tablet */
@@ -324,6 +335,13 @@
                 <p style="text-align: justify; font-size: 12px;">Operasi <strong>Modulo 256</strong> memastikan bahwa pergeseran yang berlebih akan diputar kembali (looping) ke awal (0-255), sehingga hasil enkripsi selalu berupa karakter 8-bit yang terstandarisasi, mencegah hilangnya data sandi saat ditransmisikan.</p>
             </div>
         </div>
+
+        <!-- COPYRIGHT KELOMPOK -->
+        <div class="footer-copyright">
+            &copy; Kelompok 3<br>
+            Jeremia Sitepu &bull; Destiana Fitri
+        </div>
+
     </div>
 
     <script>
