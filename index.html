@@ -2,17 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta Viewport penting untuk responsivitas Mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Kriptografi ASCII Mod 256</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* RESET & DASAR */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #0b0f19;
@@ -25,234 +20,147 @@
             align-items: center;
             min-height: 100vh;
             color: #ffffff;
-            padding: 15px;
+            padding: 15px; /* Memberi jarak agar tidak mentok pinggir layar di HP */
             overflow-x: hidden;
             position: relative;
         }
 
+        /* EFEK BACKGROUND (Dioptimalkan agar ringan) */
         body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, transparent 20%, #0b0f19 100%);
-            pointer-events: none;
-            z-index: -1;
+            pointer-events: none; z-index: -1;
         }
-
-        /* Optimalisasi Animasi Background agar ringan */
         .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -2;
-            opacity: 0.5;
-            animation: floatOrb 12s infinite alternate ease-in-out;
-            will-change: transform; /* Hint untuk GPU rendering */
+            position: fixed; border-radius: 50%; filter: blur(70px); z-index: -2; opacity: 0.4;
+            animation: floatOrb 15s infinite alternate ease-in-out;
         }
         .orb-1 { width: 300px; height: 300px; background: #00c9ff; top: -100px; left: -100px; }
         .orb-2 { width: 350px; height: 350px; background: #333399; bottom: -100px; right: -100px; animation-delay: -5s; }
-
         @keyframes floatOrb {
             0% { transform: translate(0, 0); }
             100% { transform: translate(20px, 20px); }
         }
 
+        /* WADAH KACA UTAMA - Sangat Responsif */
         .glass-container {
-            background: rgba(15, 23, 42, 0.6); /* Sedikit digelapkan agar lebih tajam */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 25px;
             width: 100%;
-            max-width: 750px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 800px; /* Batas maksimal di Laptop */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        h2 { text-align: center; margin-bottom: 5px; font-weight: 600; font-size: 24px; }
-        p.subtitle { text-align: center; font-size: 13px; margin-bottom: 20px; opacity: 0.8; }
+        h2 { text-align: center; margin-bottom: 5px; font-weight: 600; font-size: clamp(20px, 4vw, 26px); }
+        p.subtitle { text-align: center; font-size: clamp(12px, 2.5vw, 14px); margin-bottom: 20px; opacity: 0.8; }
 
-        /* Responsif Tabs */
+        /* TAB MENU MENGALIR */
         .nav-tabs {
-            display: flex;
-            flex-wrap: wrap; /* Mengizinkan tombol turun ke bawah di HP */
-            gap: 5px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 5px;
-            margin-bottom: 20px;
+            display: flex; flex-wrap: wrap; gap: 5px; background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px; padding: 5px; margin-bottom: 20px;
         }
-
         .tab-btn {
-            flex: 1 1 calc(20% - 10px); /* 5 Tab di PC */
-            min-width: 80px; /* Batas minimum ukuran di HP */
-            padding: 8px 5px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            transition: 0.2s;
+            flex: 1 1 calc(20% - 5px); min-width: 70px; padding: 8px 5px;
+            text-align: center; background: transparent; border: none; color: white;
+            cursor: pointer; border-radius: 6px; font-size: clamp(11px, 2vw, 13px);
+            font-weight: 500; transition: 0.2s;
         }
         .tab-btn:hover { background: rgba(255, 255, 255, 0.1); }
         .tab-btn.active {
             background: linear-gradient(135deg, #00c9ff 0%, #333399 100%);
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
-
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* INPUT & TEKS */
         .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #ccc; }
+        .flex-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        label { font-size: clamp(12px, 2.5vw, 14px); font-weight: 500; color: #ccc; }
         
         textarea, input[type="number"] {
-            width: 100%;
-            padding: 10px 12px;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
+            width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;
+            font-family: 'JetBrains Mono', monospace; font-size: 14px; outline: none; transition: 0.3s;
+            resize: vertical; /* Mencegah pelebaran ke samping di HP */
         }
         textarea:focus, input[type="number"]:focus { border-color: #00c9ff; background: rgba(0, 0, 0, 0.4); }
 
-        /* Responsif Tombol Aksi */
-        .button-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        /* TOMBOL AKSI FLEKSIBEL */
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
         .action-btn {
-            flex: 1 1 calc(33.33% - 10px);
-            min-width: 100px;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            color: white;
+            flex: 1 1 120px; /* Lebar minimum 120px, akan otomatis bertumpuk di layar super kecil */
+            padding: 10px; border: none; border-radius: 8px; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: 0.2s; color: white;
         }
         .btn-encrypt { background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%); color: #000; }
         .btn-decrypt { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff; }
         .btn-reset { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: #000; }
-        .action-btn:active { transform: scale(0.97); }
+        .action-btn:active { transform: scale(0.96); }
+        .btn-small { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .btn-small:hover { background: rgba(255,255,255,0.2); }
+        .btn-small.success { background: #92fe9d; color: #000; border-color: #92fe9d; }
 
-        /* Tombol Salin (Copy) */
-        .copy-btn {
-            background: rgba(0, 201, 255, 0.2);
-            border: 1px solid rgba(0, 201, 255, 0.5);
-            color: #00c9ff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: 0.2s;
-            float: right; /* Posisikan ke kanan */
-        }
-        .copy-btn:hover { background: rgba(0, 201, 255, 0.4); color: white; }
-        .copy-btn:active { transform: scale(0.95); }
-
+        /* WADAH HASIL & INFO */
         .result-container {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 60px;
-            word-wrap: break-word;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
+            background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1); min-height: 60px;
+            word-wrap: break-word; font-family: 'JetBrains Mono', monospace; font-size: 14px;
         }
-
         .info-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid #00c9ff;
-            margin-bottom: 15px;
-            font-size: 13px;
-            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;
+            border-left: 3px solid #00c9ff; margin-bottom: 15px; font-size: 13px; line-height: 1.6;
         }
 
+        /* AREA SCROLL */
         .scrollable-area {
-            max-height: 350px;
-            overflow-y: auto;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.15);
-            padding: 5px;
+            max-height: 350px; overflow-y: auto; overflow-x: hidden; border-radius: 8px;
+            background: rgba(0, 0, 0, 0.15); padding: 5px;
         }
         .scrollable-area::-webkit-scrollbar { width: 5px; }
         .scrollable-area::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 5px; }
 
-        /* GRID ASCII TABEL - Kunci Responsifnya di sini! */
+        /* MAGIC GRID ASCII - Solusi Ultimate Responsif */
         .ascii-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 Kolom untuk PC */
-            gap: 5px;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Menciptakan kolom sebanyak yang muat */
+            gap: 6px;
         }
         .ascii-item {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 10px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
+            display: flex; justify-content: space-between; background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: 'JetBrains Mono', monospace; font-size: 12px;
         }
         .a-dec { color: #aaa; }
         .a-char { color: #92fe9d; font-weight: bold; font-size: 14px; }
 
         .history-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            border-left: 3px solid #92fe9d;
-            font-size: 12px;
+            background: rgba(255, 255, 255, 0.05); padding: 10px; margin-bottom: 8px;
+            border-radius: 6px; border-left: 3px solid #92fe9d; font-size: 12px; word-wrap: break-word;
         }
         .history-item.decrypt { border-left-color: #ff0844; }
 
-        /* Footer Copyright */
         .footer-copyright {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            letter-spacing: 0.5px;
+            text-align: center; margin-top: 25px; padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 12px;
+            color: rgba(255, 255, 255, 0.6); letter-spacing: 0.5px; line-height: 1.5;
         }
 
-        /* MEDIA QUERIES UNTUK TABLET (max 768px) */
-        @media (max-width: 768px) {
-            .ascii-grid { grid-template-columns: repeat(2, 1fr); } /* 2 Kolom di Tablet */
-            .glass-container { padding: 20px; }
-            .tab-btn { flex: 1 1 30%; }
-        }
-
-        /* MEDIA QUERIES UNTUK HP / MOBILE (max 480px) */
+        /* KHUSUS HP LAYAR KECIL (Dibawah 480px) */
         @media (max-width: 480px) {
-            h2 { font-size: 20px; }
-            .glass-container { padding: 15px; border-radius: 12px; }
-            .ascii-grid { grid-template-columns: 1fr; } /* 1 Kolom memanjang di HP */
-            .tab-btn { flex: 1 1 calc(50% - 10px); font-size: 12px; } /* 2 tombol sebaris */
-            .button-group { flex-direction: column; } /* Tombol berjejer ke bawah */
-            .action-btn { width: 100%; }
-            /* Mematikan blur berlebih di HP agar tidak lag */
-            .glass-container { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-            .bg-orb { filter: blur(50px); }
+            .glass-container { padding: 15px; }
+            .tab-btn { flex: 1 1 calc(33% - 5px); } /* Tabs jadi lebih rapi di HP */
+            .ascii-grid { grid-template-columns: repeat(2, 1fr); } /* Minimal 2 kolom di HP */
         }
     </style>
 </head>
 <body>
 
-    <!-- Latar Belakang Animasi (Diringankan) -->
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
 
@@ -268,12 +176,11 @@
             <button class="tab-btn" onclick="openTab('tab-tentang')">ℹ️ Tentang</button>
         </div>
 
-        <!-- TAB UTAMA -->
         <div id="tab-utama" class="tab-content active">
             <div class="input-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <label for="inputText" style="margin: 0;">Pesan (Plaintext / Ciphertext):</label>
-                    <button class="copy-btn" onclick="pasteText()" id="btnPaste">📋 Tempel</button>
+                <div class="flex-label">
+                    <label for="inputText">Pesan (Plaintext / Ciphertext):</label>
+                    <button class="btn-small" id="btnPaste" onclick="pasteText()">📋 Tempel</button>
                 </div>
                 <textarea id="inputText" rows="3" placeholder="Ketik sesuatu di sini..."></textarea>
             </div>
@@ -287,15 +194,14 @@
                 <button class="action-btn btn-reset" onclick="resetData()">ATUR ULANG</button>
             </div>
             <div class="input-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <label style="color: #00c9ff; margin: 0;">Hasil Output:</label>
-                    <button class="copy-btn" onclick="copyResult()" id="btnCopy">📋 Salin</button>
+                <div class="flex-label">
+                    <label style="color: #00c9ff;">Hasil Output:</label>
+                    <button class="btn-small" id="btnCopy" onclick="copyResult()">📋 Salin</button>
                 </div>
                 <div class="result-container" id="outputText">-</div>
             </div>
         </div>
 
-        <!-- TAB RUMUS -->
         <div id="tab-rumus" class="tab-content">
             <div class="info-box">
                 <p><strong>Rumus Enkripsi:</strong> <code>C = (P + K) mod 256</code></p>
@@ -303,49 +209,43 @@
                 <p style="margin-top:10px; font-size:12px; opacity:0.8;">C: Ciphertext | P: Plaintext | K: Key</p>
             </div>
             <div id="dynamic-formula-container" style="display: none;">
-                <label style="color: #92fe9d;">Simulasi Perhitungan Terakhir:</label>
-                <div class="scrollable-area" id="dynamic-formula-content" style="font-family: monospace; font-size: 11px; background: rgba(0,0,0,0.3); padding:10px;"></div>
+                <label style="color: #92fe9d; display: block; margin-bottom: 5px;">Simulasi Perhitungan Terakhir:</label>
+                <div class="scrollable-area" id="dynamic-formula-content" style="font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.3); padding:10px;"></div>
             </div>
         </div>
 
-        <!-- TAB TABEL ASCII RESPONSIVE GRID -->
         <div id="tab-tabel" class="tab-content">
-            <div class="info-box" style="padding: 10px; font-size: 11px; margin-bottom:10px;">
-                Tabel ASCII 256 Karakter. (Susunan otomatis menyesuaikan ukuran layarmu).
+            <div class="info-box" style="padding: 10px; font-size: 14px; margin-bottom:10px; text-align: center; font-weight: 500;">
+                Tabel ASCII 256 Karakter
             </div>
             <div class="scrollable-area" style="max-height: 400px; padding-right:5px;">
                 <div class="ascii-grid" id="asciiGrid">
-                    <!-- Grid akan diisi via JavaScript -->
-                </div>
+                    </div>
             </div>
         </div>
 
-        <!-- TAB RIWAYAT -->
         <div id="tab-riwayat" class="tab-content">
             <div class="scrollable-area" id="historyContainer" style="padding-right:5px;">
                 <p style="text-align: center; opacity: 0.5; margin-top: 20px; font-size:13px;">Belum ada riwayat aktivitas.</p>
             </div>
         </div>
 
-        <!-- TAB TENTANG -->
         <div id="tab-tentang" class="tab-content">
             <div class="info-box">
                 <h3 style="color:#00c9ff; margin-bottom:8px;">Tentang Kriptografi Modulo 256</h3>
-                <p style="text-align: justify; font-size: 12px; margin-bottom:8px;">Metode Kriptografi ini memodifikasi pergeseran Caesar Cipher (Caesar Shift) ke dalam skala digital, menggeser nilai karakter pada <strong>Tabel ASCII (American Standard Code for Information Interchange)</strong>.</p>
-                <p style="text-align: justify; font-size: 12px;">Operasi <strong>Modulo 256</strong> memastikan bahwa pergeseran yang berlebih akan diputar kembali (looping) ke awal (0-255), sehingga hasil enkripsi selalu berupa karakter 8-bit yang terstandarisasi, mencegah hilangnya data sandi saat ditransmisikan.</p>
+                <p style="text-align: justify; font-size: 13px; margin-bottom:8px;">Metode Kriptografi ini memodifikasi pergeseran Caesar Cipher (Caesar Shift) ke dalam skala digital, menggeser nilai karakter pada <strong>Tabel ASCII (American Standard Code for Information Interchange)</strong>.</p>
+                <p style="text-align: justify; font-size: 13px;">Operasi <strong>Modulo 256</strong> memastikan bahwa pergeseran yang berlebih akan diputar kembali (looping) ke awal (0-255), sehingga hasil enkripsi selalu berupa karakter 8-bit yang terstandarisasi, mencegah hilangnya data sandi saat ditransmisikan.</p>
             </div>
         </div>
 
-        <!-- COPYRIGHT KELOMPOK -->
         <div class="footer-copyright">
             &copy; Kelompok 3<br>
-            Jeremia Sitepu &bull; Destiana Fitri
+            <strong>Jeremia Sitepu &bull; Destiana Fitri</strong>
         </div>
 
     </div>
 
     <script>
-        // Tab Navigasi
         function openTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -353,48 +253,36 @@
             event.currentTarget.classList.add('active');
         }
 
-        // Generate Grid ASCII Otomatis (Ringan & Cepat)
         function generateASCIIGrid() {
             const container = document.getElementById('asciiGrid');
             let gridHTML = '';
             for (let i = 0; i < 256; i++) {
                 let displayChar = String.fromCharCode(i);
-                // Menangani karakter tak kasat mata
                 if (i < 32 || i === 127) displayChar = '[Ctrl]';
                 if (i === 173) displayChar = '[Shy]';
-                
-                gridHTML += `
-                    <div class="ascii-item">
-                        <span class="a-dec">${i}</span>
-                        <span class="a-char">${displayChar}</span>
-                    </div>
-                `;
+                gridHTML += `<div class="ascii-item"><span class="a-dec">${i}</span><span class="a-char">${displayChar}</span></div>`;
             }
             container.innerHTML = gridHTML;
         }
         generateASCIIGrid();
 
-        // Variabel History
         let historyData = [];
 
         function renderHistory() {
             const container = document.getElementById('historyContainer');
             if (historyData.length === 0) return;
-            
             let html = '';
             historyData.forEach(item => {
                 html += `
                     <div class="history-item ${item.css}">
-                        <div style="font-size: 10px; opacity: 0.6; margin-bottom: 4px;">${item.time} | <strong>${item.mode}</strong> (K: ${item.key})</div>
+                        <div style="font-size: 11px; opacity: 0.6; margin-bottom: 4px;">${item.time} | <strong>${item.mode}</strong> (K: ${item.key})</div>
                         <div style="margin-bottom: 2px;">In: ${item.input}</div>
                         <div style="color:#00c9ff;">Out: ${item.output}</div>
-                    </div>
-                `;
+                    </div>`;
             });
             container.innerHTML = html;
         }
 
-        // Proses Enkripsi & Dekripsi
         function processData(isEncrypt) {
             const text = document.getElementById("inputText").value;
             const key = parseInt(document.getElementById("shiftKey").value);
@@ -409,113 +297,70 @@
             for (let i = 0; i < text.length; i++) {
                 let asciiCode = text.charCodeAt(i);
                 let newCode;
-                let displayChar = (asciiCode < 32 || asciiCode === 127 || asciiCode === 173) ? '[Ctrl]' : text[i];
+                let displayOriginalChar = (asciiCode < 32 || asciiCode === 127 || asciiCode === 173) ? '[Ctrl]' : text[i];
                 
                 if (isEncrypt) {
                     newCode = (asciiCode + key) % 256;
-                    // Format karakter hasil (menghindari karakter kontrol tak kasat mata)
                     let displayResultChar = (newCode < 32 || newCode === 127 || newCode === 173) ? '[Ctrl]' : String.fromCharCode(newCode);
-                    
-                    formulaHTML += `<div>'${displayChar}' (${asciiCode}) &rarr; +${key} mod 256 = <b style="color:#92fe9d">${newCode}</b> ('<span style="color:#fff">${displayResultChar}</span>')</div>`;
+                    formulaHTML += `<div style="margin-bottom: 4px;">'${displayOriginalChar}' (${asciiCode}) &rarr; +${key} mod 256 = <b style="color:#92fe9d">${newCode} ('${displayResultChar}')</b></div>`;
                 } else {
                     newCode = ((asciiCode - key) % 256 + 256) % 256;
-                    // Format karakter hasil (menghindari karakter kontrol tak kasat mata)
                     let displayResultChar = (newCode < 32 || newCode === 127 || newCode === 173) ? '[Ctrl]' : String.fromCharCode(newCode);
-                    
-                    formulaHTML += `<div>'${displayChar}' (${asciiCode}) &rarr; -${key} mod 256 = <b style="color:#ff0844">${newCode}</b> ('<span style="color:#fff">${displayResultChar}</span>')</div>`;
+                    formulaHTML += `<div style="margin-bottom: 4px;">'${displayOriginalChar}' (${asciiCode}) &rarr; -${key} mod 256 = <b style="color:#ff0844">${newCode} ('${displayResultChar}')</b></div>`;
                 }
                 result += String.fromCharCode(newCode);
             }
 
             document.getElementById("outputText").innerText = result;
-
             document.getElementById("dynamic-formula-container").style.display = "block";
             document.getElementById("dynamic-formula-content").innerHTML = `
-                <div style="margin-bottom: 5px; color: ${isEncrypt ? '#92fe9d' : '#ff0844'};">Mode: ${modeName} | K: ${key}</div>
+                <div style="margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; color: ${isEncrypt ? '#92fe9d' : '#ff0844'};">Mode: <strong>${modeName}</strong> | Kunci (K): <strong>${key}</strong></div>
                 ${formulaHTML}
             `;
 
             historyData.unshift({
-                time: new Date().toLocaleTimeString('id-ID'),
-                mode: modeName,
-                css: isEncrypt ? '' : 'decrypt',
-                input: text, key: key, output: result
+                time: new Date().toLocaleTimeString('id-ID'), mode: modeName,
+                css: isEncrypt ? '' : 'decrypt', input: text, key: key, output: result
             });
-            
-            // Batasi riwayat maksimal 10 agar memori tidak berat
             if (historyData.length > 10) historyData.pop(); 
             renderHistory();
         }
 
-        // Reset Fungsi
         function resetData() {
             document.getElementById("inputText").value = "";
-            document.getElementById("shiftKey").value = 0; // Sudah diubah ke 0
+            document.getElementById("shiftKey").value = 0;
             document.getElementById("outputText").innerText = "-";
             document.getElementById("dynamic-formula-container").style.display = "none";
             document.getElementById("dynamic-formula-content").innerHTML = "";
-            document.getElementById("btnCopy").innerText = "📋 Salin"; // Kembalikan teks tombol
         }
 
-        // Fungsi Salin (Copy) Hasil
         function copyResult() {
             const resultText = document.getElementById("outputText").innerText;
-            const btnCopy = document.getElementById("btnCopy");
-
-            // Jangan salin jika hasilnya masih kosong/tanda strip
-            if (resultText === "-" || resultText.trim() === "") {
-                return;
-            }
-
-            // Gunakan API modern untuk menyalin
+            if (resultText === "-") return;
             navigator.clipboard.writeText(resultText).then(() => {
-                // Beri efek visual bahwa teks berhasil disalin
-                btnCopy.innerText = "✔️ Disalin!";
-                btnCopy.style.background = "rgba(146, 254, 157, 0.3)";
-                btnCopy.style.borderColor = "#92fe9d";
-                btnCopy.style.color = "#92fe9d";
-
-                // Kembalikan tombol seperti semula setelah 2 detik
+                const btnCopy = document.getElementById("btnCopy");
+                btnCopy.innerHTML = "✔️ Disalin!";
+                btnCopy.classList.add("success");
                 setTimeout(() => {
-                    btnCopy.innerText = "📋 Salin";
-                    btnCopy.style.background = "rgba(0, 201, 255, 0.2)";
-                    btnCopy.style.borderColor = "rgba(0, 201, 255, 0.5)";
-                    btnCopy.style.color = "#00c9ff";
+                    btnCopy.innerHTML = "📋 Salin";
+                    btnCopy.classList.remove("success");
                 }, 2000);
-            }).catch(err => {
-                alert("Gagal menyalin teks!");
-                console.error('Terjadi kesalahan saat menyalin: ', err);
             });
         }
 
-        // Fungsi Tempel (Paste) Teks Input
-        async function pasteText() {
-            try {
-                // Meminta browser untuk membaca memori clipboard (teks yang terakhir di-copy)
-                const text = await navigator.clipboard.readText();
-                
-                // Memasukkan teks tersebut ke dalam kotak teks textarea
+        function pasteText() {
+            navigator.clipboard.readText().then(text => {
                 document.getElementById("inputText").value = text;
-                
-                // Memberikan efek visual (animasi berhasil) pada tombol
                 const btnPaste = document.getElementById("btnPaste");
-                btnPaste.innerText = "✔️ Ditempel!";
-                btnPaste.style.background = "rgba(146, 254, 157, 0.3)";
-                btnPaste.style.borderColor = "#92fe9d";
-                btnPaste.style.color = "#92fe9d";
-
-                // Kembalikan teks dan warna tombol seperti semula setelah 2 detik
+                btnPaste.innerHTML = "✔️ Ditempel!";
+                btnPaste.classList.add("success");
                 setTimeout(() => {
-                    btnPaste.innerText = "📋 Tempel";
-                    btnPaste.style.background = "rgba(0, 201, 255, 0.2)";
-                    btnPaste.style.borderColor = "rgba(0, 201, 255, 0.5)";
-                    btnPaste.style.color = "#00c9ff";
+                    btnPaste.innerHTML = "📋 Tempel";
+                    btnPaste.classList.remove("success");
                 }, 2000);
-            } catch (err) {
-                // Notifikasi jika gagal (biasanya karena browser tidak memberi izin akses clipboard)
-                alert("Gagal menempelkan teks! Pastikan browsermu mengizinkan akses Clipboard.");
-                console.error('Terjadi kesalahan saat menempel: ', err);
-            }
+            }).catch(err => {
+                alert("Gagal membaca clipboard. Pastikan browser memberi izin akses.");
+            });
         }
     </script>
 </body>
